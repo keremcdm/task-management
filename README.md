@@ -6,6 +6,10 @@ Authentication is handled via Supabase Auth (JWT-based), and data access is prot
 
 ---
 
+![Task Management API - Swagger UI](docs-screenshot.png)
+
+---
+
 ## 📑 Table of Contents
 
 - [Features](#-features)
@@ -17,6 +21,9 @@ Authentication is handled via Supabase Auth (JWT-based), and data access is prot
 - [API Endpoints](#-api-endpoints)
 - [Example Requests](#-example-requests)
 - [Notes](#-notes)
+- [What I Learned](#-what-i-learned)
+- [License](#-license)
+- [Author](#-author)
 
 ---
 
@@ -46,7 +53,6 @@ Authentication is handled via Supabase Auth (JWT-based), and data access is prot
 ---
 
 ## 📁 Project Structure
-
 ```
 TaskManagement/
 ├── main.py              # FastAPI app + all endpoints
@@ -80,7 +86,6 @@ You'll need a Supabase project before you can run this API. Follow these steps c
 ### 2. Create the `tasks` table
 
 Open the **SQL Editor** in the left sidebar, click **New query**, paste the following and click **Run**:
-
 ```sql
 CREATE TABLE public.tasks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -96,7 +101,6 @@ CREATE TABLE public.tasks (
 ### 3. Enable Row Level Security and add policies
 
 Still in the SQL Editor, run:
-
 ```sql
 -- Enable RLS on the tasks table
 ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
@@ -153,7 +157,6 @@ Save these for the next step.
 ## 💻 Local Installation
 
 ### 1. Clone the repository
-
 ```bash
 git clone https://github.com/keremcdm/TaskManagement.git
 cd TaskManagement
@@ -174,7 +177,6 @@ source .venv/bin/activate
 ```
 
 ### 3. Install dependencies
-
 ```bash
 pip install -r requirements.txt
 ```
@@ -182,14 +184,12 @@ pip install -r requirements.txt
 ### 4. Configure environment variables
 
 Copy the example file and fill in your Supabase credentials:
-
 ```bash
 cp .env.example .env
 ```
 
 Then edit `.env`:
-
-```
+```env
 SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_KEY=your_anon_public_key_here
 SUPABASE_ADMIN_KEY=your_service_role_secret_key_here
@@ -206,7 +206,6 @@ ADMIN_EMAILS=youradmin@example.com,anotheradmin@example.com
 ## 🚀 Running the API
 
 From the project root with your virtual environment activated:
-
 ```bash
 uvicorn main:app --reload
 ```
@@ -236,7 +235,6 @@ Protected endpoints require the access token from `/login` in an `access-token` 
 ## 📬 Example Requests
 
 ### Register a new user
-
 ```bash
 curl -X POST http://127.0.0.1:8000/register \
   -H "Content-Type: application/json" \
@@ -249,7 +247,6 @@ Response:
 ```
 
 ### Log in
-
 ```bash
 curl -X POST http://127.0.0.1:8000/login \
   -H "Content-Type: application/json" \
@@ -264,7 +261,6 @@ Response:
 Save this token — you'll need it for all subsequent requests.
 
 ### Create a task
-
 ```bash
 curl -X POST http://127.0.0.1:8000/tasks/ \
   -H "Content-Type: application/json" \
@@ -290,7 +286,6 @@ Response:
 ```
 
 ### List your tasks
-
 ```bash
 curl -X GET http://127.0.0.1:8000/tasks/ \
   -H "access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -299,7 +294,6 @@ curl -X GET http://127.0.0.1:8000/tasks/ \
 Regular users see only their own tasks. Admin users (emails listed in `ADMIN_EMAILS`) see every task from every user.
 
 ### Update a task
-
 ```bash
 curl -X PUT http://127.0.0.1:8000/tasks/a1b2c3d4-... \
   -H "Content-Type: application/json" \
@@ -310,7 +304,6 @@ curl -X PUT http://127.0.0.1:8000/tasks/a1b2c3d4-... \
 Only the fields you include are updated (partial update). Response is the full updated task.
 
 ### Delete a task
-
 ```bash
 curl -X DELETE http://127.0.0.1:8000/tasks/a1b2c3d4-... \
   -H "access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -332,11 +325,29 @@ Response:
 
 ---
 
-## 🎯 Project Goal
+## 🎓 What I Learned
 
-This project was built as part of an internship to demonstrate:
+Building this project taught me a lot about real-world backend development:
 
-- Using Supabase as a backend-as-a-service (database + auth)
-- Building a modern REST API with FastAPI
-- Implementing proper authentication and authorization (JWT + RLS)
-- Designing clean CRUD endpoints with Pydantic validation
+- **JWT authentication end-to-end** — from issuing tokens on login to validating them on every protected request
+- **Row Level Security at the database layer** — how to enforce per-user data isolation independently of application code, so even a bug in the API can't leak data between users
+- **The difference between anon and service-role keys** — when each is appropriate and why the service role key must never leave the server
+- **Structuring a FastAPI project** — clean separation between routing (`main.py`), database access (`database.py`), and request/response validation (`schemas.py`)
+- **Pydantic for validation** — using separate models for create, update, and response to keep the API contract explicit
+- **Security basics** — keeping secrets in `.env`, using `.gitignore` properly, and the importance of rotating leaked credentials
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👤 Author
+
+**Kerem Çidem**
+Computer Engineering Student at Politecnico di Torino
+
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/keremcdm)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/keremcidem/)
